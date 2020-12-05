@@ -7,7 +7,7 @@ syfe
 
 ## installation
 
-use git or your plugin manager of choice to install marv.
+use git or your plugin manager of choice to install syfe.
 
 ## supported languages
 
