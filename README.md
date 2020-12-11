@@ -12,6 +12,9 @@ use git or your plugin manager of choice to install syfe.
 ## supported languages
 
 * markdown
+    * syntax highlighting, including code blocks.
+* vimscript
+    * folding via [explicit comment markers](https://learnvimscriptthehardway.stevelosh.com/chapters/18.html#grouping): `" {{` and `" }}` start and stop a fold, respectively.
 
 # acknowledgements
 
