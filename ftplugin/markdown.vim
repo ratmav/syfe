@@ -83,11 +83,10 @@ function! s:MarkdownClearSyntaxVariables()
 endfunction
 " }}}
 
-" augroup Markdown {{{
-augroup Markdown
-    " These autocmd calling s:MarkdownRefreshSyntax need to be kept in sync with
-    " the autocmds calling s:MarkdownSetupFolding in after/ftplugin/markdown.vim.
+" augroup markdown_syntax_highlighting {{{
+augroup markdown_syntax_highlighting
     autocmd! * <buffer>
+
     autocmd BufWinEnter <buffer> call s:MarkdownRefreshSyntax(1)
     autocmd BufUnload <buffer> call s:MarkdownClearSyntaxVariables()
     autocmd BufWritePost <buffer> call s:MarkdownRefreshSyntax(0)
