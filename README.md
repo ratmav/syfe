@@ -1,8 +1,6 @@
 syfe
 ====
 
-**alpha software. work in progress.**
-
 (sy)ntax highlighting, (f)olding, and whit(e)space management
 
 ## installation
