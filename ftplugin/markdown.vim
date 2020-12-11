@@ -1,115 +1,97 @@
-let b:fenced_block = 0
-let b:front_matter = 0
-let s:vim_markdown_folding_level = get(g:, "vim_markdown_folding_level", 1)
-
-" s:is_mkdCode {{{
-function! s:is_mkdCode(lnum)
-  let name = synIDattr(synID(a:lnum, 1, 0), 'name')
-  return (name =~ '^mkd\%(Code$\|Snippet\)' || name != '' && name !~ '^\%(mkd\|html\)')
-endfunction
-" }}}
-
-" Foldexpr_markdown {{{
-function! Foldexpr_markdown(lnum)
-    if (a:lnum == 1)
-        let l0 = ''
-    else
-        let l0 = getline(a:lnum-1)
+" MarkdownHighlightSources() {{{
+function! s:MarkdownHighlightSources(force)
+    " Syntax highlight source code embedded in notes.
+    " Look for code blocks in the current file
+    let filetypes = {}
+    for line in getline(1, '$')
+        let ft = matchstr(line, '```\s*\zs[0-9A-Za-z_+-]*\ze.*')
+        if !empty(ft) && ft !~ '^\d*$' | let filetypes[ft] = 1 | endif
+    endfor
+    if !exists('b:mkd_known_filetypes')
+        let b:mkd_known_filetypes = {}
+    endif
+    if !exists('b:mkd_included_filetypes')
+        " set syntax file name included
+        let b:mkd_included_filetypes = {}
+    endif
+    if !a:force && (b:mkd_known_filetypes == filetypes || empty(filetypes))
+        return
     endif
 
-    " keep track of fenced code blocks
-    if l0 =~ '````*' || l0 =~ '\~\~\~\~*'
-        if b:fenced_block == 0
-            let b:fenced_block = 1
-        elseif b:fenced_block == 1
-            let b:fenced_block = 0
-        endif
-    elseif g:vim_markdown_frontmatter == 1
-        if b:front_matter == 1
-            if l0 == '---'
-                let b:front_matter = 0
-            endif
-        elseif a:lnum == 2
-            if l0 == '---'
-                let b:front_matter = 1
-            endif
-        endif
-    endif
-
-    if b:fenced_block == 1 || b:front_matter == 1
-        " keep previous foldlevel
-        return '='
-    endif
-
-    let l2 = getline(a:lnum+1)
-    if  l2 =~ '^==\+\s*' && !s:is_mkdCode(a:lnum+1)
-        " next line is underlined (level 1)
-        return '>1'
-    elseif l2 =~ '^--\+\s*' && !s:is_mkdCode(a:lnum+1)
-        " next line is underlined (level 2)
-        if s:vim_markdown_folding_level >= 2
-            return '>1'
-        else
-            return '>2'
-        endif
-    endif
-
-    let l1 = getline(a:lnum)
-    if l1 =~ '^#' && !s:is_mkdCode(a:lnum)
-        " fold level according to option
-        if s:vim_markdown_folding_level == 1 || matchend(l1, '^#\+') > s:vim_markdown_folding_level
-            if a:lnum == line('$')
-                return matchend(l1, '^#\+') - 1
+    " Now we're ready to actually highlight the code blocks.
+    let startgroup = 'mkdCodeStart'
+    let endgroup = 'mkdCodeEnd'
+    for ft in keys(filetypes)
+        if a:force || !has_key(b:mkd_known_filetypes, ft)
+            let filetype = ft
+            let group = 'mkdSnippet' . toupper(substitute(filetype, "[+-]", "_", "g"))
+            if !has_key(b:mkd_included_filetypes, filetype)
+                let include = s:SyntaxInclude(filetype)
+                let b:mkd_included_filetypes[filetype] = 1
             else
-                return -1
+                let include = '@' . toupper(filetype)
             endif
-        else
-            " headers are not folded
-            return 0
+            let command = 'syntax region %s matchgroup=%s start="^\s*```\s*%s.*$" matchgroup=%s end="\s*```$" keepend contains=%s%s'
+            execute printf(command, group, startgroup, ft, endgroup, include, has('conceal') && get(g:, 'vim_markdown_conceal', 1) && get(g:, 'vim_markdown_conceal_code_blocks', 1) ? ' concealends' : '')
+            execute printf('syntax cluster mkdNonListItem add=%s', group)
+
+            let b:mkd_known_filetypes[ft] = 1
         endif
+    endfor
+endfunction
+" }}}
+
+" SyntaxInclude() {{{
+function! s:SyntaxInclude(filetype)
+    " Include the syntax highlighting of another {filetype}.
+    let grouplistname = '@' . toupper(a:filetype)
+    " Unset the name of the current syntax while including the other syntax
+    " because some syntax scripts do nothing when "b:current_syntax" is set
+    if exists('b:current_syntax')
+        let syntax_save = b:current_syntax
+        unlet b:current_syntax
     endif
+    try
+        execute 'syntax include' grouplistname 'syntax/' . a:filetype . '.vim'
+        execute 'syntax include' grouplistname 'after/syntax/' . a:filetype . '.vim'
+    catch /E484/
+        " Ignore missing scripts
+    endtry
+    " Restore the name of the current syntax
+    if exists('syntax_save')
+        let b:current_syntax = syntax_save
+    elseif exists('b:current_syntax')
+        unlet b:current_syntax
+    endif
+    return grouplistname
+endfunction
+" }}}
 
-    if l0 =~ '^#' && !s:is_mkdCode(a:lnum-1)
-        " previous line starts with hashes
-        return '>'.matchend(l0, '^#\+')
-    else
-        " keep previous foldlevel
-        return '='
+" MarkdownRefreshSyntax() {{{
+function! s:MarkdownRefreshSyntax(force)
+    if &filetype =~ 'markdown' && line('$') > 1
+        call s:MarkdownHighlightSources(a:force)
     endif
 endfunction
 " }}}
 
-" s:MarkdownSetupFolding {{{
-function! s:MarkdownSetupFolding()
-  if !get(g:, "vim_markdown_folding_disabled", 0)
-      if get(g:, "vim_markdown_folding_style_pythonic", 0)
-          if get(g:, "vim_markdown_override_foldtext", 1)
-              setlocal foldtext=Foldtext_markdown()
-          endif
-      endif
-      setlocal foldexpr=Foldexpr_markdown(v:lnum)
-      setlocal foldmethod=expr
-  endif
+" MarkdownClearSyntaxVariables {{{
+function! s:MarkdownClearSyntaxVariables()
+    if &filetype =~ 'markdown'
+        unlet! b:mkd_included_filetypes
+    endif
 endfunction
 " }}}
 
-" s:MarkdownSetupFoldLevel {{{
-function! s:MarkdownSetupFoldLevel()
-  if get(g:, "vim_markdown_folding_style_pythonic", 0)
-      " set default foldlevel
-      execute "setlocal foldlevel=".s:vim_markdown_folding_level
-  endif
-endfunction
-" }}}
-
-call s:MarkdownSetupFoldLevel()
-call s:MarkdownSetupFolding()
-
-" augroup Mkd {{{
-augroup Mkd
-  " These autocmds need to be kept in sync with the autocmds calling s:MarkdownRefreshSyntax in ftplugin/markdown.vim.
-  autocmd BufWinEnter,BufWritePost <buffer> call s:MarkdownSetupFolding()
-  autocmd InsertEnter,InsertLeave <buffer> call s:MarkdownSetupFolding()
-  autocmd CursorHold,CursorHoldI <buffer> call s:MarkdownSetupFolding()
+" augroup Markdown {{{
+augroup Markdown
+    " These autocmd calling s:MarkdownRefreshSyntax need to be kept in sync with
+    " the autocmds calling s:MarkdownSetupFolding in after/ftplugin/markdown.vim.
+    autocmd! * <buffer>
+    autocmd BufWinEnter <buffer> call s:MarkdownRefreshSyntax(1)
+    autocmd BufUnload <buffer> call s:MarkdownClearSyntaxVariables()
+    autocmd BufWritePost <buffer> call s:MarkdownRefreshSyntax(0)
+    autocmd InsertEnter,InsertLeave <buffer> call s:MarkdownRefreshSyntax(0)
+    autocmd CursorHold,CursorHoldI <buffer> call s:MarkdownRefreshSyntax(0)
 augroup END
 " }}}
