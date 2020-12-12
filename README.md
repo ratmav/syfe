@@ -9,10 +9,18 @@ use git or your plugin manager of choice to install syfe.
 
 ## supported languages
 
+* go
+    * autoindentation and (8 spaces) per tab.
+* makefile
+    * autoindentation and (8 spaces) per tab.
 * markdown
     * syntax highlighting, including code blocks.
+* python
+    * indentation-based folding.
 * vimscript
     * folding via [explicit comment markers](https://learnvimscriptthehardway.stevelosh.com/chapters/18.html#grouping): `" {{` and `" }}` start and stop a fold, respectively.
+* yaml
+    * delimiter-based autoindentation.
 
 # acknowledgements
 
