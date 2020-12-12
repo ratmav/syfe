@@ -1,3 +1,3 @@
 function! syfe#init#Init()
-  command! SyfeWhitespaceToggle :call syfe#whitespace#Toggle()
+  command! SyfeWhitespaceClear :call syfe#whitespace#Clear()
 endfunction

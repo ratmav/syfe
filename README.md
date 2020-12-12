@@ -7,7 +7,7 @@ syfe
 
 use git or your plugin manager of choice to install syfe.
 
-## supported languages
+## sytax and folding
 
 * go
     * autoindentation and (8 spaces) per tab.
@@ -22,13 +22,15 @@ use git or your plugin manager of choice to install syfe.
 * yaml
     * delimiter-based autoindentation.
 
-## commands
+## whitespace management
 
-commands are provided for mapping as desired.
+### display
 
-* `SyfeWhitespaceToggle`
-    1. call once to highlight trailing whitespace in red.
-    1. call again to remove any trailing whitespace.
+syfe will highlight trailing whitespace when entering a modifiable buffer.
+
+### commands
+
+* `SyfeWhitespaceClear`: call to remove any trailing whitespace in a modifiable buffer.
 
 # acknowledgements
 

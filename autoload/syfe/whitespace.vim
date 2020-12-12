@@ -1,27 +1,29 @@
-" syfe#whitespace#Toggle {{{
-let g:syfe_whitespace_toggle = 0
-function! syfe#whitespace#Toggle()
+" syfe#whitespace#Clear {{{
+function! syfe#whitespace#Clear()
+  " check for modifiable buffer.
   if &modifiable
-    if g:syfe_whitespace_toggle
-      " remove trailing whitespace in modifiable buffers.
+      " remove trailing whitespace.
         %s/\s\+$//e
 
       " clear the search term.
       noh
 
-      " notify
+      " notify on clear.
       echo "syfe: cleared whitespace"
-
-      let g:syfe_whitespace_toggle = 0
-    else
-      " highlight and match trailing whitespace.
-      highlight Extrawhitespace ctermbg=red guibg=red
-      match ExtraWhitespace /\s\+$/
-
-      let g:syfe_whitespace_toggle = 1
-    endif
   else
-    echo "syfe: buffer isn't modifiable."
+    " notify on fixed buffer.
+    echo "syfe: buffer is not modifiable."
+  endif
+endfunction
+" }}}
+
+" syfe#whitespace#Highlight {{{
+function! syfe#whitespace#Highlight()
+  " check for modifiable buffer.
+  if &modifiable
+    " highlight trailing whitespace.
+    highlight TrailingWhitespace ctermbg=red guibg=red
+    match TrailingWhitespace /\s\+$/
   endif
 endfunction
 " }}}
