@@ -22,6 +22,12 @@ use git or your plugin manager of choice to install syfe.
 * yaml
     * delimiter-based autoindentation.
 
+## commands
+
+commands are provided for mapping as desired.
+
+### `SyfeWhitespaceClear`: finds and removes trailing whitespace.
+
 # acknowledgements
 
 * [ben williams'](https://plasticboy.com/), [vim-markdown](https://github.com/plasticboy/vim-markdown), as the starting point for markdown support.

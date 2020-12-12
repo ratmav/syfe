@@ -1,0 +1,1 @@
+call syfe#init#Init()
