@@ -1,5 +1,5 @@
 " syfe#whitespace#Clear {{{
-function! syfe#whitespace#Clear()
+function! syfe#whitespace#Clear() abort
   " check for modifiable buffer.
   if &modifiable
       " remove trailing whitespace.
@@ -9,16 +9,16 @@ function! syfe#whitespace#Clear()
       noh
 
       " notify on clear.
-      echo "syfe: cleared whitespace"
+      echo 'syfe: cleared whitespace'
   else
     " notify on fixed buffer.
-    echo "syfe: buffer is not modifiable."
+    echo 'syfe: buffer is not modifiable.'
   endif
 endfunction
 " }}}
 
 " syfe#whitespace#Highlight {{{
-function! syfe#whitespace#Highlight()
+function! syfe#whitespace#Highlight() abort
   " check for modifiable buffer.
   if &modifiable
     " highlight trailing whitespace.
