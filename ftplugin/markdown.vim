@@ -5,7 +5,7 @@ function! s:MarkdownHighlightSources(force)
     let filetypes = {}
     for line in getline(1, '$')
         let ft = matchstr(line, '```\s*\zs[0-9A-Za-z_+-]*\ze.*')
-        if !empty(ft) && ft !~ '^\d*$' | let filetypes[ft] = 1 | endif
+        if !empty(ft) && ft !~# '^\d*$' | let filetypes[ft] = 1 | endif
     endfor
     if !exists('b:mkd_known_filetypes')
         let b:mkd_known_filetypes = {}
@@ -24,7 +24,7 @@ function! s:MarkdownHighlightSources(force)
     for ft in keys(filetypes)
         if a:force || !has_key(b:mkd_known_filetypes, ft)
             let filetype = ft
-            let group = 'mkdSnippet' . toupper(substitute(filetype, "[+-]", "_", "g"))
+            let group = 'mkdSnippet' . toupper(substitute(filetype, '[+-]', '_', 'g'))
             if !has_key(b:mkd_included_filetypes, filetype)
                 let include = s:SyntaxInclude(filetype)
                 let b:mkd_included_filetypes[filetype] = 1
@@ -69,7 +69,7 @@ endfunction
 
 " MarkdownRefreshSyntax() {{{
 function! s:MarkdownRefreshSyntax(force)
-    if &filetype =~ 'markdown' && line('$') > 1
+    if &filetype =~# 'markdown' && line('$') > 1
         call s:MarkdownHighlightSources(a:force)
     endif
 endfunction
@@ -77,7 +77,7 @@ endfunction
 
 " MarkdownClearSyntaxVariables {{{
 function! s:MarkdownClearSyntaxVariables()
-    if &filetype =~ 'markdown'
+    if &filetype =~# 'markdown'
         unlet! b:mkd_included_filetypes
     endif
 endfunction
