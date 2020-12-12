@@ -26,7 +26,9 @@ use git or your plugin manager of choice to install syfe.
 
 commands are provided for mapping as desired.
 
-* `SyfeWhitespaceClear`: finds and removes trailing whitespace.
+* `SyfeWhitespaceToggle`
+    1. call once to highlight trailing whitespace in red.
+    1. call again to remove any trailing whitespace.
 
 # acknowledgements
 
