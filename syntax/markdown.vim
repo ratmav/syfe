@@ -10,7 +10,7 @@ endif
 
 if version < 600
   syntax clear
-elseif exists("b:current_syntax")
+elseif exists('b:current_syntax')
   finish
 endif
 
@@ -169,7 +169,7 @@ HtmlHiLink mkdLinkDefTarget mkdURL
 HtmlHiLink mkdLinkTitle     htmlString
 HtmlHiLink mkdDelimiter     Delimiter
 
-let b:current_syntax = "mkd"
+let b:current_syntax = 'mkd'
 
 delcommand HtmlHiLink
 " vim: ts=8
