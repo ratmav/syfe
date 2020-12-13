@@ -11,6 +11,7 @@ jobs:
         uses: actions/checkout
       - name: vint-reviewdog
         uses: reviewdog/action-vint
+          with:
+            github_token: ${{ secrets.github_token }}
         env:
           DEFAULT_BRANCH: master
-          GITHUB_TOKEN: ${{ secrets.github_token }}
