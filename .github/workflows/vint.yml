@@ -9,9 +9,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout
-      - name: vint-reviewdog
+      - name: reviewdog/action-vint
         uses: reviewdog/action-vint
-          with:
-            github_token: ${{ secrets.github_token }}
+        with:
+          github_token: ${{ secrets.github_token }}
         env:
           DEFAULT_BRANCH: master
