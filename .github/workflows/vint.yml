@@ -8,11 +8,9 @@ jobs:
       fail-fast: false
     steps:
       - name: checkout
-        uses: actions/checkout@master
+        uses: actions/checkout
       - name: vint-reviewdog
-        uses: reviewdog/action-vint@v1.0.1
-        with:
-          github_token: ${{ secrets.github_token }}
-          reporter: vint
+        uses: reviewdog/action-vint
         env:
           DEFAULT_BRANCH: master
+          GITHUB_TOKEN: ${{ secrets.github_token }}
