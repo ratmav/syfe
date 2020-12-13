@@ -4,11 +4,13 @@ jobs:
   vint:
     name: vim lint
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@master
       - name: vint-reviewdog
-        uses: reviewdog/action-vint@v1
+        uses: reviewdog/action-vint@v1.0.1
         with:
           github_token: ${{ secrets.github_token }}
           reporter: vint
