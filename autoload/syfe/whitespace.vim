@@ -17,7 +17,7 @@ function! syfe#whitespace#Clear() abort
       noh
 
       " notify on clear.
-      echo 'syfe: cleared whitespace'
+      echo 'syfe: cleared whitespace.'
   else
     " notify on fixed buffer.
     echo 'syfe: buffer is not modifiable.'
