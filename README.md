@@ -41,7 +41,7 @@ add the following to your vim configuration to remove trailing whitespace by pre
 nnoremap <silent><Leader>w :execute 'SyfeWhitespaceClear'<CR>
 ```
 
-# acknowledgements
+## acknowledgements
 
 * [ben williams'](https://plasticboy.com/), [vim-markdown](https://github.com/plasticboy/vim-markdown), as the starting point for markdown support.
 * [steve losh's](https://stevelosh.com/) book, [learn vimscript the hard way](https://learnvimscriptthehardway.stevelosh.com/), was a great and useful read.
