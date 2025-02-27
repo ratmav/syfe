@@ -1,5 +1,5 @@
 -- Terminal handling group
-local term_group = vim.api.nvim_create_augroup("SyfeTerminal", { clear = true })
+local term_group = vim.api.nvim_create_augroup("WispTerminal", { clear = true })
 
 -- Disable whitespace highlighting for terminals
 vim.api.nvim_create_autocmd({"TermOpen", "TermEnter", "BufEnter"}, {
@@ -9,10 +9,10 @@ vim.api.nvim_create_autocmd({"TermOpen", "TermEnter", "BufEnter"}, {
     if vim.bo.buftype ~= "terminal" then
       return
     end
-    
+
     -- Disable whitespace highlighting
-    vim.b.syfe_disable_whitespace = true
-    
+    vim.b.wisp_disable_whitespace = true
+
     -- Clear any existing whitespace matches in this buffer
     for _, match_id in ipairs(vim.fn.getmatches()) do
       if match_id.group == "ErrorMsg" and match_id.pattern == "\\s\\+$" then
@@ -24,4 +24,4 @@ vim.api.nvim_create_autocmd({"TermOpen", "TermEnter", "BufEnter"}, {
 })
 
 -- automatically load the plugin
-require("syfe").setup()
+require("wisp").setup()
