@@ -28,6 +28,7 @@ function S.clear()
   -- Remove trailing whitespace
   vim.cmd([[keeppatterns %s/\s\+$//e]])
   -- Remove CRLF line endings (convert to LF)
+  -- This works regardless of host OS - it looks for \r at end of lines
   vim.cmd([[keeppatterns %s/\r$//e]])
   -- Restore cursor position
   vim.api.nvim_win_set_cursor(0, cursor_pos)
