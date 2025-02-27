@@ -14,7 +14,7 @@ function S.setup(_)
     group = ws_group,
   })
   -- Set up whitespace highlighting but exclude terminal buffers
-  vim.api.nvim_create_autocmd("BufEnter", {
+  vim.api.nvim_create_autocmd({"BufEnter", "BufWritePost", "TextChanged", "InsertLeave", "WinEnter", "WinNew"}, {
     pattern = "*",
     callback = function()
       -- Skip terminal buffers or if explicitly disabled
@@ -23,10 +23,11 @@ function S.setup(_)
       end
       -- Only highlight in modifiable buffers
       if vim.bo.modifiable then
-        -- Clear existing highlights
+        -- Clear existing highlights in the current window
         for _, match_id in ipairs(vim.fn.getmatches()) do
           if match_id.group == "ErrorMsg" and match_id.pattern == "\\s\\+$" then
-            vim.fn.matchdelete(match_id.id)
+            pcall(function() vim.fn.matchdelete(match_id.id) end)
+            -- Simplified error handling - we can safely ignore failures here
           end
         end
         -- Add new highlight
@@ -43,7 +44,8 @@ function S.setup(_)
   vim.api.nvim_create_autocmd("FileType", {
     pattern = "hcl",
     callback = function()
-      require("syntax/hcl").setup()
+      -- Use dot notation for module paths to ensure cross-platform compatibility
+      require("syntax.hcl").setup()
     end,
     group = vim.api.nvim_create_augroup("SyfeHCL", { clear = true }),
   })

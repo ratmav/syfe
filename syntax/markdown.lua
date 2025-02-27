@@ -34,34 +34,37 @@ if vim.g.vim_markdown_emphasis_multiline ~= 0 then
   oneline = ' oneline'
 end
 
--- text formatting
-api.nvim_command('syn region mkdItalic matchgroup=mkdItalic start="\\%(\\*\\|_\\)" end="\\%(\\*\\|_\\)"')
-api.nvim_command('syn region mkdBold matchgroup=mkdBold start="\\%(\\*\\*\\|__\\)" end="\\%(\\*\\*\\|__\\)"')
-api.nvim_command('syn region mkdBoldItalic matchgroup=mkdBoldItalic start="\\%(\\*\\*\\*\\|___\\)" end="\\%(\\*\\*\\*\\|___\\)"')
-api.nvim_command('syn region htmlItalic matchgroup=mkdItalic start="\\%(^\\|\\s\\)\\zs\\*\\ze[^\\\\\\*\\t ]\\%\\(\\%([^*]\\|\\\\\\*\\|\\n\\)*[^\\\\\\*\\t ]\\)\\?\\*\\_W" end="[^\\\\\\*\\t ]\\zs\\*\\ze\\_W" keepend contains=@Spell' .. oneline .. concealends)
-api.nvim_command('syn region htmlItalic matchgroup=mkdItalic start="\\%(^\\|\\s\\)\\zs_\\ze[^\\\\_\\t ]" end="[^\\\\_\\t ]\\zs_\\ze\\_W" keepend contains=@Spell' .. oneline .. concealends)
-api.nvim_command('syn region htmlBold matchgroup=mkdBold start="\\%(^\\|\\s\\)\\zs\\*\\*\\ze\\S" end="\\S\\zs\\*\\*" keepend contains=@Spell' .. oneline .. concealends)
-api.nvim_command('syn region htmlBold matchgroup=mkdBold start="\\%(^\\|\\s\\)\\zs__\\ze\\S" end="\\S\\zs__" keepend contains=@Spell' .. oneline .. concealends)
-api.nvim_command('syn region htmlBoldItalic matchgroup=mkdBoldItalic start="\\%(^\\|\\s\\)\\zs\\*\\*\\*\\ze\\S" end="\\S\\zs\\*\\*\\*" keepend contains=@Spell' .. oneline .. concealends)
-api.nvim_command('syn region htmlBoldItalic matchgroup=mkdBoldItalic start="\\%(^\\|\\s\\)\\zs___\\ze\\S" end="\\S\\zs___" keepend contains=@Spell' .. oneline .. concealends)
+-- text formatting - simplified and using more consistent escaping
+api.nvim_command([[syn region mkdItalic matchgroup=mkdItalic start="\*" end="\*"]])
+api.nvim_command([[syn region mkdItalic matchgroup=mkdItalic start="_" end="_"]])
+api.nvim_command([[syn region mkdBold matchgroup=mkdBold start="\*\*" end="\*\*"]])
+api.nvim_command([[syn region mkdBold matchgroup=mkdBold start="__" end="__"]])
+api.nvim_command([[syn region mkdBoldItalic matchgroup=mkdBoldItalic start="\*\*\*" end="\*\*\*"]])
+api.nvim_command([[syn region mkdBoldItalic matchgroup=mkdBoldItalic start="___" end="___"]])
+api.nvim_command([[syn region htmlItalic matchgroup=mkdItalic start="\%(^\|\s\)\zs\*\ze\S" end="\S\zs\*" keepend contains=@Spell]] .. oneline .. concealends)
+api.nvim_command([[syn region htmlItalic matchgroup=mkdItalic start="\%(^\|\s\)\zs_\ze\S" end="\S\zs_" keepend contains=@Spell]] .. oneline .. concealends)
+api.nvim_command([[syn region htmlBold matchgroup=mkdBold start="\%(^\|\s\)\zs\*\*\ze\S" end="\S\zs\*\*" keepend contains=@Spell]] .. oneline .. concealends)
+api.nvim_command([[syn region htmlBold matchgroup=mkdBold start="\%(^\|\s\)\zs__\ze\S" end="\S\zs__" keepend contains=@Spell]] .. oneline .. concealends)
+api.nvim_command([[syn region htmlBoldItalic matchgroup=mkdBoldItalic start="\%(^\|\s\)\zs\*\*\*\ze\S" end="\S\zs\*\*\*" keepend contains=@Spell]] .. oneline .. concealends)
+api.nvim_command([[syn region htmlBoldItalic matchgroup=mkdBoldItalic start="\%(^\|\s\)\zs___\ze\S" end="\S\zs___" keepend contains=@Spell]] .. oneline .. concealends)
 
--- links
-api.nvim_command('syn region mkdFootnotes matchgroup=mkdDelimiter start="\\[^" end="\\]"')
-api.nvim_command('syn region mkdID matchgroup=mkdDelimiter start="\\[" end="\\]" contained oneline' .. conceal)
-api.nvim_command('syn region mkdURL matchgroup=mkdDelimiter start="(" end=")" contained oneline' .. conceal)
-api.nvim_command('syn region mkdLink matchgroup=mkdDelimiter start="\\\\\\@<!\\!\\?\\[\\ze[^]\\n]*\\n\\?[^]\\n]*\\][[(]" end="\\]" contains=@mkdNonListItem,@Spell nextgroup=mkdURL,mkdID skipwhite' .. concealends)
+-- links - using consistent escaping with raw Lua strings
+api.nvim_command([[syn region mkdFootnotes matchgroup=mkdDelimiter start="\[^" end="\]"]])
+api.nvim_command([[syn region mkdID matchgroup=mkdDelimiter start="\[" end="\]" contained oneline]] .. conceal)
+api.nvim_command([[syn region mkdURL matchgroup=mkdDelimiter start="\(" end="\)" contained oneline]] .. conceal)
+api.nvim_command([[syn region mkdLink matchgroup=mkdDelimiter start="\[\^\@!" end="\]" contains=@mkdNonListItem,@Spell nextgroup=mkdURL,mkdID skipwhite]] .. concealends)
 
--- autolinks
+-- autolinks - using raw Lua strings for cleaner pattern representation
 api.nvim_command([[syn match mkdInlineURL /https\?:\/\/\(\w\+\(:\w\+\)\?@\)\?\([A-Za-z0-9][-_0-9A-Za-z]*\.\)\{1,}\(\w\{2,}\.\?\)\{1,}\(:[0-9]\{1,5}\)\?[^] \t]*/]])
-api.nvim_command([[syn region mkdInlineURL matchgroup=mkdDelimiter start="(\(https\?:\/\/\(\w\+\(:\w\+\)\?@\)\?\([A-Za-z0-9][-_0-9A-Za-z]*\.\)\{1,}\(\w\{2,}\.\?\)\{1,}\(:[0-9]\{1,5}\)\?[^] \t]*)\)\@=" end=")"]])
-api.nvim_command([[syn region mkdInlineURL matchgroup=mkdDelimiter start="\\\@<!<\ze[a-z][a-z0-9,.-]\{1,22}:\/\/[^> ]*>" end=">"]])
+api.nvim_command([[syn region mkdInlineURL matchgroup=mkdDelimiter start="\(" end="\)" contains=mkdInlineURL oneline keepend containedin=mkdLink]])
+api.nvim_command([[syn region mkdInlineURL matchgroup=mkdDelimiter start="<" end=">" contains=mkdInlineURL oneline keepend]])
 
--- link definitions
+-- link definitions - properly escaped
 api.nvim_command([[syn region mkdLinkDef matchgroup=mkdDelimiter start="^ \{,3}\zs\[\^\@!" end="]:" oneline nextgroup=mkdLinkDefTarget skipwhite]])
 api.nvim_command([[syn region mkdLinkDefTarget start="<\?\zs\S" excludenl end="\ze[>[:space:]\n]" contained nextgroup=mkdLinkTitle,mkdLinkDef skipwhite skipnl oneline]])
 api.nvim_command([[syn region mkdLinkTitle matchgroup=mkdDelimiter start=+"+ end=+"+ contained]])
 api.nvim_command([[syn region mkdLinkTitle matchgroup=mkdDelimiter start=+'+ end=+'+ contained]])
-api.nvim_command([[syn region mkdLinkTitle matchgroup=mkdDelimiter start=(+ end=)+ contained]])
+api.nvim_command([[syn region mkdLinkTitle matchgroup=mkdDelimiter start="\(" end="\)" contained]])
 
 -- headings
 api.nvim_command([[syn region htmlH1 matchgroup=mkdHeading start="^\s*#" end="$" contains=mkdLink,mkdInlineURL,@Spell]])
@@ -73,16 +76,16 @@ api.nvim_command([[syn region htmlH6 matchgroup=mkdHeading start="^\s*######" en
 api.nvim_command([[syn match htmlH1 /^.\+\n=\+$/ contains=mkdLink,mkdInlineURL,@Spell]])
 api.nvim_command([[syn match htmlH2 /^.\+\n-\+$/ contains=mkdLink,mkdInlineURL,@Spell]])
 
--- markdown elements
+-- markdown elements - simplified code blocks with more consistent escaping
 api.nvim_command([[syn match mkdLineBreak /  \+$/]])
 api.nvim_command([[syn region mkdBlockquote start=/^\s*>/ end=/$/ contains=mkdLink,mkdInlineURL,mkdLineBreak,@Spell]])
-api.nvim_command([[syn region mkdCode matchgroup=mkdCodeDelimiter start=/\(\([^\\]\|^\)\\\)\@<!`/ end=/`/]] .. concealcode)
-api.nvim_command([[syn region mkdCode matchgroup=mkdCodeDelimiter start=/\(\([^\\]\|^\)\\\)\@<!``/ skip=/[^`]`[^`]/ end=/``/]] .. concealcode)
-api.nvim_command([[syn region mkdCode matchgroup=mkdCodeDelimiter start=/^\s*\z(`\{3,}\)[^`]*$/ end=/^\s*\z1`*\s*$/]] .. concealcode)
-api.nvim_command([[syn region mkdCode matchgroup=mkdCodeDelimiter start=/\(\([^\\]\|^\)\\\)\@<!\~\~/ end=/\(\([^\\]\|^\)\\\)\@<!\~\~/]] .. concealcode)
-api.nvim_command([[syn region mkdCode matchgroup=mkdCodeDelimiter start=/^\s*\z(\~\{3,}\)\s*[0-9A-Za-z_+-]*\s*$/ end=/^\s*\z1\~*\s*$/]] .. concealcode)
-api.nvim_command([[syn region mkdCode matchgroup=mkdCodeDelimiter start="<pre\(\|\_s[^>]*\)\\\@<!>" end="</pre>"]] .. concealcode)
-api.nvim_command([[syn region mkdCode matchgroup=mkdCodeDelimiter start="<code\(\|\_s[^>]*\)\\\@<!>" end="</code>"]] .. concealcode)
+api.nvim_command([[syn region mkdCode matchgroup=mkdCodeDelimiter start="`" end="`"]] .. concealcode)
+api.nvim_command([[syn region mkdCode matchgroup=mkdCodeDelimiter start="``" end="``" skip="[^`]`[^`]"]] .. concealcode)
+api.nvim_command([[syn region mkdCode matchgroup=mkdCodeDelimiter start="```" end="```"]] .. concealcode)
+api.nvim_command([[syn region mkdCode matchgroup=mkdCodeDelimiter start="\~\~" end="\~\~"]] .. concealcode)
+api.nvim_command([[syn region mkdCode matchgroup=mkdCodeDelimiter start="^\s*\z(\~\{3,}\)\s*\(\w\|[+-]\)*\s*$" end="^\s*\z1\~*\s*$"]] .. concealcode)
+api.nvim_command([[syn region mkdCode matchgroup=mkdCodeDelimiter start="<pre\(\|\_s[^>]*\)>" end="</pre>"]] .. concealcode)
+api.nvim_command([[syn region mkdCode matchgroup=mkdCodeDelimiter start="<code\(\|\_s[^>]*\)>" end="</code>"]] .. concealcode)
 api.nvim_command([[syn region mkdFootnote start="\[^" end="\]"]])
 api.nvim_command([[syn match mkdCode /^\s*\n\(\(\s\{8,}[^ ]\|\t\t\+[^\t]\).*\n\)\+/]])
 api.nvim_command([[syn match mkdCode /\%^\(\(\s\{4,}[^ ]\|\t\+[^\t]\).*\n\)\+/]])

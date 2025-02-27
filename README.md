@@ -16,20 +16,11 @@ use git or your plugin manager of choice to install syfe.
 ### languages
 
 * go
-    * autoindentation; 8 spaces per tab.
 * hcl
-    * syntax highlighting and folding for HashiCorp Configuration Language (HCL).
-    * supports terraform/opentofu (.tf, .tfvars) and nomad (.nomad) files.
-    * indentation; 2 spaces per tab.
 * makefile
-    * autoindentation; 8 spaces per tab.
 * markdown
-    * basic syntax highlighting, fenced code blocks.
 * python
-    * indentation-based folding.
 * yaml
-    * autoindention on -, =, and other key characters.
-    * no autoindent on # to make block commenting easier.
 
 ## whitespace management
 
