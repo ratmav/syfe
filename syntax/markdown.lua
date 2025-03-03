@@ -56,7 +56,7 @@ api.nvim_command([[syn region mkdLink matchgroup=mkdDelimiter start="\[\^\@!" en
 
 -- autolinks - using raw Lua strings for cleaner pattern representation
 api.nvim_command([[syn match mkdInlineURL /https\?:\/\/\(\w\+\(:\w\+\)\?@\)\?\([A-Za-z0-9][-_0-9A-Za-z]*\.\)\{1,}\(\w\{2,}\.\?\)\{1,}\(:[0-9]\{1,5}\)\?[^] \t]*/]])
-api.nvim_command([[syn region mkdInlineURL matchgroup=mkdDelimiter start="\(" end="\)" contains=mkdInlineURL oneline keepend containedin=mkdLink]])
+api.nvim_command([[syn region mkdInlineURL matchgroup=mkdDelimiter start="\\(" end="\\)" contains=mkdInlineURL oneline keepend containedin=mkdLink]])
 api.nvim_command([[syn region mkdInlineURL matchgroup=mkdDelimiter start="<" end=">" contains=mkdInlineURL oneline keepend]])
 
 -- link definitions - properly escaped
@@ -64,7 +64,7 @@ api.nvim_command([[syn region mkdLinkDef matchgroup=mkdDelimiter start="^ \{,3}\
 api.nvim_command([[syn region mkdLinkDefTarget start="<\?\zs\S" excludenl end="\ze[>[:space:]\n]" contained nextgroup=mkdLinkTitle,mkdLinkDef skipwhite skipnl oneline]])
 api.nvim_command([[syn region mkdLinkTitle matchgroup=mkdDelimiter start=+"+ end=+"+ contained]])
 api.nvim_command([[syn region mkdLinkTitle matchgroup=mkdDelimiter start=+'+ end=+'+ contained]])
-api.nvim_command([[syn region mkdLinkTitle matchgroup=mkdDelimiter start="\(" end="\)" contained]])
+api.nvim_command([[syn region mkdLinkTitle matchgroup=mkdDelimiter start="\\(" end="\\)" contained]])
 
 -- headings
 api.nvim_command([[syn region htmlH1 matchgroup=mkdHeading start="^\s*#" end="$" contains=mkdLink,mkdInlineURL,@Spell]])
