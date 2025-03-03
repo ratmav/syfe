@@ -51,7 +51,7 @@ api.nvim_command([[syn region htmlBoldItalic matchgroup=mkdBoldItalic start="\%(
 -- links - using consistent escaping with raw Lua strings
 api.nvim_command([[syn region mkdFootnotes matchgroup=mkdDelimiter start="\[^" end="\]"]])
 api.nvim_command([[syn region mkdID matchgroup=mkdDelimiter start="\[" end="\]" contained oneline]] .. conceal)
-api.nvim_command([[syn region mkdURL matchgroup=mkdDelimiter start="\(" end="\)" contained oneline]] .. conceal)
+api.nvim_command([[syn region mkdURL matchgroup=mkdDelimiter start="\\(" end="\\)" contained oneline]] .. conceal)
 api.nvim_command([[syn region mkdLink matchgroup=mkdDelimiter start="\[\^\@!" end="\]" contains=@mkdNonListItem,@Spell nextgroup=mkdURL,mkdID skipwhite]] .. concealends)
 
 -- autolinks - using raw Lua strings for cleaner pattern representation
