@@ -1,44 +1,29 @@
-syfe
+wisp
 ====
 
-(sy)ntax highlighting, (f)olding, and whit(e)space management
+(w)h(i)te(sp)ace management
 
 ## installation
 
-use git or your plugin manager of choice to install syfe.
+use git or your plugin manager of choice to install wisp.
 
 ## features
 
-### terminal
-
-* disables whitespace highlighting in terminals
-
-### languages
-
-* go
-* hcl
-* makefile
-* markdown
-* python
-* yaml
-
-## whitespace management
-
-### display
-
-syfe will highlight trailing whitespace when entering a **modifiable** buffer.
+* disables whitespace highlighting in terminals.
+* highlights trailing whitespace when entering a **modifiable** buffer.
+    * terminal buffers are *not* modifiable.
 
 ### commands
 
-* `SyfeWipe`: call to remove any trailing whitespace and CRLF line endings in a **modifiable** buffer.
+* `:Wisp`: call to remove any trailing whitespace and crlf line endings in a **modifiable** buffer.
 
 #### mapping example
 
 add the following to your vim configuration to clean up a file by pressing Leader-w:
 
 ```lua
--- syfe:
-vim.keymap.set("n", "<Leader>w", "<cmd>SyfeWipe<CR>", { silent = true })
+-- wisp:
+vim.keymap.set("n", "<Leader>w", "<cmd>Wisp<CR>", { silent = true })
 ```
 
 ## development

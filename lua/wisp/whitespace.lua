@@ -1,22 +1,22 @@
-local S = {}
+local W = {}
 
 -- highlight trailing whitespace
-function S.highlight()
+function W.highlight()
   if vim.bo.modifiable then
     vim.fn.matchadd("ErrorMsg", "\\s\\+$")
   end
 end
 
 -- clear both trailing whitespace and CRLF line endings
-function S.clear()
+function W.clear()
   -- Check for terminal buffer
   if vim.bo.buftype == "terminal" then
-    print("SyfeWipe: unsupported buffer type (terminal)")
+    print("wisp: unsupported buffer type (terminal)")
     return
   end
   -- Check for non-modifiable buffer
   if not vim.bo.modifiable then
-    print("SyfeWipe: unsupported buffer type (not modifiable)")
+    print("wisp: unsupported buffer type (not modifiable)")
     return
   end
   -- Save cursor position
@@ -34,7 +34,7 @@ function S.clear()
   vim.api.nvim_win_set_cursor(0, cursor_pos)
   -- Show message about changes made (using print instead of notify)
   if ws_count > 0 or crlf_count > 0 then
-    local msg = "SyfeWipe: "
+    local msg = "wisp: "
     if ws_count > 0 then
       msg = msg .. "removed trailing whitespace"
       if crlf_count > 0 then
@@ -42,12 +42,12 @@ function S.clear()
       end
     end
     if crlf_count > 0 then
-      msg = msg .. "converted CRLF to LF"
+      msg = msg .. "converted crlf to lf"
     end
     print(msg)
   else
-    print("SyfeWipe: no changes needed")
+    print("wisp: no changes needed")
   end
 end
 
-return S
+return W

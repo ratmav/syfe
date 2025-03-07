@@ -1,9 +1,9 @@
-local S = {}
+local W = {}
 
 -- Handle terminal settings
-function S.setup(_)
+function W.setup(_)
   -- Only disable whitespace highlighting for terminal buffers
-  vim.b.syfe_disable_whitespace = true
+  vim.b.wisp_disable_whitespace = true
 end
 
-return S
+return W

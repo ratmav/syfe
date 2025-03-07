@@ -1,15 +1,15 @@
-local S = {}
+local W = {}
 
 -- setup function to initialize the plugin
-function S.setup(_)
+function W.setup(_)
   -- Create an autocommand group for whitespace highlighting
-  local ws_group = vim.api.nvim_create_augroup("SyfeWhitespace", { clear = true })
+  local ws_group = vim.api.nvim_create_augroup("WispWhitespace", { clear = true })
   -- First, ensure terminals don't get highlighting
   vim.api.nvim_create_autocmd({"TermOpen", "TermEnter"}, {
     pattern = "*",
     callback = function()
       -- Disable whitespace highlighting for this buffer
-      vim.b.syfe_disable_whitespace = true
+      vim.b.wisp_disable_whitespace = true
     end,
     group = ws_group,
   })
@@ -18,7 +18,7 @@ function S.setup(_)
     pattern = "*",
     callback = function()
       -- Skip terminal buffers or if explicitly disabled
-      if vim.bo.buftype == "terminal" or vim.b.syfe_disable_whitespace then
+      if vim.bo.buftype == "terminal" or vim.b.wisp_disable_whitespace then
         return
       end
       -- Only highlight in modifiable buffers
@@ -37,18 +37,9 @@ function S.setup(_)
     group = ws_group,
   })
   -- create unified command for removing whitespace and CRLF
-  vim.api.nvim_create_user_command("SyfeWipe", function()
-    require("syfe.whitespace").clear()
+  vim.api.nvim_create_user_command("Wisp", function()
+    require("wisp.whitespace").clear()
   end, {})
-  -- Set up syntax highlighting for HCL files
-  vim.api.nvim_create_autocmd("FileType", {
-    pattern = "hcl",
-    callback = function()
-      -- Use dot notation for module paths to ensure cross-platform compatibility
-      require("syntax.hcl").setup()
-    end,
-    group = vim.api.nvim_create_augroup("SyfeHCL", { clear = true }),
-  })
 end
 
-return S
+return W
